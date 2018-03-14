@@ -48,16 +48,80 @@ ListNode *add_two_numbers_inorder(ListNode **num1, ListNode **num2)
 }
 
 ///////////////////////////////////////////////////////////////////////////////
+// Arrange list into odd-even nodes
+//
+// @param nums pointer to the head of a linked list
+///////////////////////////////////////////////////////////////////////////////
+void rearrange_odd_even(ListNode **nums)
+{
+    if (*nums != NULL)
+    {
+
+        ListNode *odd = *nums;
+        ListNode *evenhead = (*nums)->next;
+        ListNode *even = evenhead;
+        while (even && even->next)
+        {
+            odd->next = (odd->next)->next;
+            even->next = (even->next)->next;
+            odd = odd->next;
+            even = even->next;
+        }
+        odd->next = evenhead;
+    }
+}
+
+///////////////////////////////////////////////////////////////////////////////
+// Merge two sorted lists
+//
+// @param l1 pointer to the first linked list
+// @param l2 pointer to the the second linked list
+///////////////////////////////////////////////////////////////////////////////
+ListNode* mergeTwoLists(ListNode* l1, ListNode* l2) 
+{
+    ListNode *tail = malloc(sizeof(ListNode));
+    tail->val = 0;
+    ListNode *result = tail;
+    while(l1 && l2)
+    {
+        if (l1->val <= l2->val)
+        {
+            tail->next = l1;
+            l1 = l1->next;
+        }
+        else
+        {
+            tail->next = l2;
+            l2 = l2->next;
+        }
+        tail = tail->next; 
+    }
+    tail->next = l1?l1:l2;
+    return result->next;
+}
+
+///////////////////////////////////////////////////////////////////////////////
+// Swap pairs
+//
+// @param num pointer to the first linked list
+///////////////////////////////////////////////////////////////////////////////
+void swapPairs(ListNode **num)
+{
+
+}
+
+///////////////////////////////////////////////////////////////////////////////
 // Main program
 ///////////////////////////////////////////////////////////////////////////////
 int main()
 {
     printf("Play with Linked List!!!\n");
 
+    ///////////////////////////////////////////////////////////////////////////
     printf("Add two numbers\n");
     // Create test data
-    int num1[] = {1, 2, 3, 4};
-    int num2[] = {5, 6, 7, 8};
+    int num1[] = {1, 4, 5, 7};
+    int num2[] = {2, 3, 6, 7, 8};
     ListNode * head1 = create_list(num1, 4, false);
     ListNode * head2 = create_list(num2, 4, false);
     printf("First number: \n");
@@ -69,9 +133,25 @@ int main()
     printf("Results: \n");
     print_list(&result);
 
+    ///////////////////////////////////////////////////////////////////////////
+    printf("Odd-even numbers\n");
+    int nums[] = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10};
+    ListNode *nums_list = create_list(nums, 10, false);
+    rearrange_odd_even(&nums_list);
+    printf("Results: \n");
+    print_list(&nums_list);
+    
+    
+    ///////////////////////////////////////////////////////////////////////////
+    printf("Merge two list\n");
+    ListNode *merged_list = mergeTwoLists(head1, head2);
+    printf("Results: \n");
+    print_list(&merged_list);
+
     // Clean up resources
     delete_list(&head1);
     delete_list(&head2);
     delete_list(&result);
+    delete_list(&nums_list);
     return 0;
 }
