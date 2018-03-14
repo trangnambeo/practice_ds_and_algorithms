@@ -1,72 +1,66 @@
-#include <stdio.h>
-#include <stdlib.h>
+#include "linked_list.h"
 
 ///////////////////////////////////////////////////////////////////////////////
-// Linked list node
+// Add Two Numbers
 //
+// @param num1 first pointer to the first number represented by a linked list
+// @param num2 second pointer to the number represented by a linked list
 ///////////////////////////////////////////////////////////////////////////////
-struct ListNode
+ListNode *add_two_numbers(ListNode **num1, ListNode **num2)
 {
-    int data;
-    struct ListNode *next;
-};
-
-///////////////////////////////////////////////////////////////////////////////
-// Insert value into a linked list at front
-//
-// param[in] head pointer to head of linked list
-// param[in] data data to insert to a linked list
-///////////////////////////////////////////////////////////////////////////////
-void insert_front(struct ListNode **head, int data)
-{
-    struct ListNode *new_node = malloc(sizeof(struct ListNode));
-    new_node->data = data;
-    new_node->next = *head;
-    *head = new_node;
-}
-
-///////////////////////////////////////////////////////////////////////////////
-// Print data in list
-///////////////////////////////////////////////////////////////////////////////
-void print_list(struct ListNode **head)
-{
-    struct ListNode *p = *head;
-    while(p != NULL)
+    ListNode *ptr_1 = *num1;
+    ListNode *ptr_2 = *num2;
+    unsigned int remainder = 0;
+    unsigned int sum = 0;
+    ListNode *result = NULL;
+    while(ptr_1 != NULL || ptr_2 != NULL)
     {
-        printf("%d ", p->data);
-        p = p->next;
+	sum = remainder;
+	if (ptr_1)
+	{
+	    sum += ptr_1->val;
+	    ptr_1 = ptr_1->next;
+	}
+	if (ptr_2)
+	{
+	    sum += ptr_2->val;
+	    ptr_2 = ptr_2->next;
+	}
+	insert_front(&result, sum % 10);
+	remainder = sum / 10;
     }
-    printf("\n");
-}
-
-///////////////////////////////////////////////////////////////////////////////
-// Delete a list
-///////////////////////////////////////////////////////////////////////////////
-void delete_list(struct ListNode **head)
-{
-    struct ListNode *aux_node = NULL;
-    struct ListNode *iterator = *head;
-    while(iterator)
+    if (remainder != 0)
     {
-        aux_node = iterator->next;
-        free(iterator);
-        iterator = aux_node;
+	insert_front(&result, remainder);
     }
+    return result;
 }
 
-
-
+///////////////////////////////////////////////////////////////////////////////
+// Main program
+///////////////////////////////////////////////////////////////////////////////
 int main()
 {
-    printf("Hello Nam. Have fun with Cracking the coding interview!!!\n");
-    // Allocate head node
-    struct ListNode * head = NULL;
-    head = malloc(sizeof(struct ListNode));
-    head->data = 1;
-    head->next = NULL;
-    insert_front(&head, 2);
-    insert_front(&head, 3);
-    print_list(&head);
-    delete_list(&head);
+    printf("Play with Linked List!!!\n");
+
+    printf("Add two numbers\n");
+    // Create test data
+    int num1[] = {1, 2, 3, 4};
+    int num2[] = {5, 6, 7, 8};
+    ListNode * head1 = create_list(num1, 4, false);
+    ListNode * head2 = create_list(num2, 4, false);
+    printf("First number: \n");
+    print_list(&head1);
+    printf("Second number: \n");
+    print_list(&head2);
+
+    ListNode *result = add_two_numbers(&head1, &head2);
+    printf("Results: \n");
+    print_list(&result);
+
+    // Clean up resources
+    delete_list(&head1);
+    delete_list(&head2);
+    delete_list(&result);
     return 0;
 }

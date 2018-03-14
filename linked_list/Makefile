@@ -1,7 +1,8 @@
 CC=gcc
-CFLAGS=-c -Werror
+CFLAGS=-c -Werror -ggdb
 LDFLAGS=
-SOURCES=linked_list.c
+SOURCES=linked_list.c main.c
+INCLUDES=linked_list.h
 OBJECTS=$(SOURCES:.c=.o)
 EXECUTABLE=linked_list
 
@@ -10,7 +11,7 @@ all: $(SOURCES) $(EXECUTABLE)
 $(EXECUTABLE): $(OBJECTS)
 	$(CC) $(LDFLAGS) $(OBJECTS) -o $@
 
-.cpp.o:
+.c.o:
 	$(CC) $(CFLAGS) $< -o $@
 
 valgrind: $(EXECUTABLE)
