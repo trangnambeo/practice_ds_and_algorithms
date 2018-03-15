@@ -104,6 +104,10 @@ ListNode* mergeTwoLists(ListNode* l1, ListNode* l2)
 // Swap pairs
 //
 // @param num pointer to the first linked list
+//
+// @question
+//  Input: 1 ->2 ->3 ->4 ->5 ->6
+//  Output: 2 ->1 ->4 ->3 ->6 ->5
 ///////////////////////////////////////////////////////////////////////////////
 void swapPairs(ListNode **num)
 {
