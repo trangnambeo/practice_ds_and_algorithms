@@ -55,9 +55,9 @@ ListNode * delete_list(ListNode **head)
     ListNode *aux_node = NULL, *p = *head;
     while (p != NULL)
     {
-	aux_node = p->next;
-	free(p);
-	p = aux_node;
+	    aux_node = p->next;
+	    free(p);
+    	p = aux_node;
     }
 }
 

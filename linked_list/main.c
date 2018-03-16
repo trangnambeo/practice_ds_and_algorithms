@@ -97,6 +97,10 @@ ListNode* mergeTwoLists(ListNode* l1, ListNode* l2)
         tail = tail->next; 
     }
     tail->next = l1?l1:l2;
+    ListNode *dummy = result;
+    result = result->next;
+    free(dummy);
+    return result;
     return result->next;
 }
 
@@ -109,9 +113,30 @@ ListNode* mergeTwoLists(ListNode* l1, ListNode* l2)
 //  Input: 1 ->2 ->3 ->4 ->5 ->6
 //  Output: 2 ->1 ->4 ->3 ->6 ->5
 ///////////////////////////////////////////////////////////////////////////////
-void swapPairs(ListNode **num)
+void swapPairs(ListNode **head)
 {
+    // Use a new head to point to the head of list
+    ListNode *new_head = malloc(sizeof(ListNode));
+    new_head->next = *head;
 
+    ListNode *temp = new_head;
+
+    ListNode *prev = NULL;
+    ListNode *cur = NULL;
+    while (temp && temp->next)
+    {
+        prev = temp->next;
+        cur = (temp->next)->next;
+        prev->next = cur->next;
+        cur->next = prev;
+        temp->next = cur;
+        temp = prev;
+    }
+    *head = new_head->next;
+    if (new_head)
+    {
+        free(new_head);
+    }
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -152,9 +177,18 @@ int main()
     printf("Results: \n");
     print_list(&merged_list);
 
+    ///////////////////////////////////////////////////////////////////////////
+    printf("Swap pairs in linked list\n");
+    int pairs[] = {1, 2, 3, 4, 5, 6};
+    ListNode *swap_list = create_list(pairs, 6, false);
+    swapPairs(&swap_list);
+    printf("Results: \n");
+    print_list(&swap_list);
+    delete_list(&swap_list);
+    
     // Clean up resources
     delete_list(&head1);
-    delete_list(&head2);
+    //delete_list(&head2);
     delete_list(&result);
     delete_list(&nums_list);
     return 0;
