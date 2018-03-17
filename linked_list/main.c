@@ -117,8 +117,8 @@ void rearrange_even_odd(ListNode **nums)
 ///////////////////////////////////////////////////////////////////////////////
 ListNode* mergeTwoLists(ListNode* l1, ListNode* l2) 
 {
-    ListNode *tail = malloc(sizeof(ListNode));
-    tail->val = 0;
+    ListNode dummy = {.val = 0, .next = NULL};
+    ListNode *tail = &dummy;
     ListNode *result = tail;
     while(l1 && l2)
     {
@@ -135,10 +135,7 @@ ListNode* mergeTwoLists(ListNode* l1, ListNode* l2)
         tail = tail->next; 
     }
     tail->next = l1?l1:l2;
-    ListNode *dummy = result;
-    result = result->next;
-    free(dummy);
-    return result;
+    return result->next;
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -153,10 +150,9 @@ ListNode* mergeTwoLists(ListNode* l1, ListNode* l2)
 void swapPairs(ListNode **head)
 {
     // Use a new head to point to the head of list
-    ListNode *new_head = malloc(sizeof(ListNode));
-    new_head->next = *head;
+    ListNode new_head = {.val = 0, .next = *head};
 
-    ListNode *temp = new_head;
+    ListNode *temp = &new_head;
 
     ListNode *prev = NULL;
     ListNode *cur = NULL;
@@ -166,14 +162,11 @@ void swapPairs(ListNode **head)
         cur = (temp->next)->next;
         prev->next = cur->next;
         cur->next = prev;
+        // The first time the next command is called, new head is set
         temp->next = cur;
         temp = prev;
     }
-    *head = new_head->next;
-    if (new_head)
-    {
-        free(new_head);
-    }
+    *head = new_head.next;
 }
 
 
@@ -211,6 +204,54 @@ void rotateRight(ListNode** head, int k)
 }
 
 ///////////////////////////////////////////////////////////////////////////////
+// Insertion sort
+//
+// @param head pointer to head of a linked list
+///////////////////////////////////////////////////////////////////////////////
+void insertionSortList(ListNode** head) 
+{
+
+}
+
+///////////////////////////////////////////////////////////////////////////////
+// List pivoting
+//
+// @param head pointer to head of a linked list
+// @param k pivot value
+///////////////////////////////////////////////////////////////////////////////
+void pivotList(ListNode** head, int k) 
+{
+    ListNode lsmaller = {.val = 0, .next = NULL};
+    ListNode llarger = {.val = 0, .next = NULL};
+    ListNode *smaller_ptr = &lsmaller;
+    ListNode *larger_ptr = &llarger;
+    ListNode *cur = *head;
+    while (cur)
+    {
+        if (cur->val <= k)
+        {
+            // Construct list of nodes with values smaller than k
+            smaller_ptr->next = cur;
+            // Note: the first time the previous assignment is called,
+            // lsmaller.next is set forever
+            smaller_ptr = smaller_ptr->next;
+        }
+        else
+        {
+            // Construct list of nodes with values greater than k
+            larger_ptr->next = cur;
+            // Note: the first time the previous assignment is called,
+            // llarger.next is set forever
+            larger_ptr = larger_ptr->next;
+        }
+        cur = cur->next;
+    }
+    larger_ptr->next = NULL;
+    smaller_ptr->next = llarger.next;
+    *head = lsmaller.next;
+}
+
+///////////////////////////////////////////////////////////////////////////////
 // Main program
 ///////////////////////////////////////////////////////////////////////////////
 int main()
@@ -223,7 +264,7 @@ int main()
     int num1[] = {1, 4, 5, 7};
     int num2[] = {2, 3, 6, 7, 8};
     ListNode * head1 = create_list(num1, 4, false);
-    ListNode * head2 = create_list(num2, 4, false);
+    ListNode * head2 = create_list(num2, 5, false);
     printf("First number: \n");
     print_list(&head1);
     printf("Second number: \n");
@@ -274,6 +315,15 @@ int main()
     print_list(&rotate_list);
     delete_list(&rotate_list);
     
+    ///////////////////////////////////////////////////////////////////////////
+    printf("Pivot ordering list\n");
+    int pivot_pairs[] = {1, 4, 3, 2, 5, 2};
+    ListNode *pivot_list = create_list(pivot_pairs, 6, false);
+    pivotList(&pivot_list, 3);
+    printf("Results: \n");
+    print_list(&pivot_list);
+    delete_list(&pivot_list);
+
     // Clean up resources
     delete_list(&head1);
     //delete_list(&head2);
