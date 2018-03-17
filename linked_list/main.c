@@ -67,7 +67,45 @@ void rearrange_odd_even(ListNode **nums)
             odd = odd->next;
             even = even->next;
         }
+        // Since even moves faster than odd, when even is the last node or
+        // NULL, guranteed odd is not NULL
         odd->next = evenhead;
+    }
+}
+
+///////////////////////////////////////////////////////////////////////////////
+// Arrange list into even-odd nodes
+//
+// @param nums pointer to the head of a linked list
+///////////////////////////////////////////////////////////////////////////////
+void rearrange_even_odd(ListNode **nums)
+{
+    if (*nums != NULL)
+    {
+
+        ListNode *odd = *nums;
+        ListNode *evenhead = (*nums)->next;
+        ListNode *even = evenhead;
+        while (even && even->next)
+        {
+            odd->next = (odd->next)->next;
+            odd = odd->next;
+            even->next = (even->next)->next;
+            even = even->next;
+        }
+        // Since even moves faster than odd, we need to traverse again to the
+        // last even node
+        even = evenhead;
+        while (even->next)
+        {
+            even = even->next;
+        }
+        even->next = *nums;
+        *nums = evenhead;
+        if (odd)
+        {
+            odd->next = NULL;
+        }
     }
 }
 
@@ -101,7 +139,6 @@ ListNode* mergeTwoLists(ListNode* l1, ListNode* l2)
     result = result->next;
     free(dummy);
     return result;
-    return result->next;
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -109,7 +146,7 @@ ListNode* mergeTwoLists(ListNode* l1, ListNode* l2)
 //
 // @param num pointer to the first linked list
 //
-// @question
+// @example
 //  Input: 1 ->2 ->3 ->4 ->5 ->6
 //  Output: 2 ->1 ->4 ->3 ->6 ->5
 ///////////////////////////////////////////////////////////////////////////////
@@ -137,6 +174,40 @@ void swapPairs(ListNode **head)
     {
         free(new_head);
     }
+}
+
+
+///////////////////////////////////////////////////////////////////////////////
+// Right rotate list by k positions
+//
+// @param nums pointer to the head of a linked list
+// @param k number of positions to shift
+//
+// @example
+// Given 1->2->3->4->5->NULL and k = 2,
+//
+// return 4->5->1->2->3->NULL.
+///////////////////////////////////////////////////////////////////////////////
+void rotateRight(ListNode** head, int k) 
+{
+    ListNode *fast = *head;
+    ListNode *slow = *head;
+    ListNode *newhead = NULL;
+    ListNode *newtail = NULL;
+    while (k--)
+    {
+        fast = fast->next;
+    }
+    while (fast->next)
+    {
+        fast = fast->next;
+        slow = slow->next;
+    }
+    newhead = slow->next;
+    newtail = slow;
+    newtail->next = NULL;
+    fast->next = *head;
+    *head = newhead;
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -170,6 +241,14 @@ int main()
     printf("Results: \n");
     print_list(&nums_list);
     
+    ///////////////////////////////////////////////////////////////////////////
+    printf("Even-odd numbers\n");
+    int nums2[] = {1, 2, 3, 4, 5, 6, 7, 8};
+    ListNode *pre_list = create_list(nums2, 8, false);
+    rearrange_even_odd(&pre_list);
+    printf("Results: \n");
+    print_list(&pre_list);
+    delete_list(&pre_list);
     
     ///////////////////////////////////////////////////////////////////////////
     printf("Merge two list\n");
@@ -185,6 +264,15 @@ int main()
     printf("Results: \n");
     print_list(&swap_list);
     delete_list(&swap_list);
+    
+    ///////////////////////////////////////////////////////////////////////////
+    printf("Rotate list\n");
+    int rotate[] = {1, 2, 3, 4, 5, 6, 7, 8, 9};
+    ListNode *rotate_list = create_list(rotate, 9, false);
+    rotateRight(&rotate_list, 3);
+    printf("Results: \n");
+    print_list(&rotate_list);
+    delete_list(&rotate_list);
     
     // Clean up resources
     delete_list(&head1);
