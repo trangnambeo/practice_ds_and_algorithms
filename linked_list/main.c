@@ -159,7 +159,7 @@ void swapPairs(ListNode **head)
     while (temp && temp->next)
     {
         prev = temp->next;
-        cur = (temp->next)->next;
+        cur = temp->next->next;
         prev->next = cur->next;
         cur->next = prev;
         // The first time the next command is called, new head is set
