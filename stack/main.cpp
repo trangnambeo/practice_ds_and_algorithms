@@ -3,6 +3,7 @@
 #include <vector>
 #include <string>
 #include <ctype.h>
+#include <sstream>
 
 ///////////////////////////////////////////////////////////////////////////////
 // Balance parenthesis
@@ -113,12 +114,9 @@ int calPoints(const std::vector<std::string> &ops)
                 s.pop();
                 break;
             default:
-                if (isdigit(o[0]))
-                {
-                    c = std::stoi(o);
-                    s.push(c);
-                    result += c;
-                }
+                std::stringstream(o) >> c;
+                s.push(c);
+                result += c;
         }
     }
     return result;
