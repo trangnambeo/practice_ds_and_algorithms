@@ -62,22 +62,12 @@ void reverseWords(char *str)
 }
 
 
-///////////////////////////////////////////////////////////////////////////////
-// Run length encode
-//
-// @param str string to be encoded
-// 
-// @return encoded string, e.x, "aaaabbbccccdde" --> "4a3b4c2d1e"
-///////////////////////////////////////////////////////////////////////////////
-char *runLengthEncode(char* str)
-{
-    
-}
-
 int main()
 {
     printf("Play with string\n");
-    char str[] = "   Hello nam trang    ";
+    // Reverse words in string
+    printf("Reverse words in string\n");
+    char str[] = "   Hello nam trang a    ";
     printf("Before: %s\n", str);
     reverseWords(str);
     printf("After: %s\n", str);
