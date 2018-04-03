@@ -123,6 +123,49 @@ int calPoints(const std::vector<std::string> &ops)
 }
 
 ///////////////////////////////////////////////////////////////////////////////
+// Evaluate a RPN expression
+//
+//  @param[in] expression vector represents a RPN expression
+//
+//  @return evaluated integer value of the input RPN expression
+///////////////////////////////////////////////////////////////////////////////
+int evaluateRPN(std::vector<std::string> const &expression)
+{
+   int num;
+   std::stack<int> stk;
+   for (auto &c: expression)
+   {
+      if (c[0] != '+' && c[0] != '-' && c[0] != 'x' && c[0] != '/')
+      {
+         std::stringstream(c) >> num;
+         stk.push(num);
+      }
+      else
+      {
+         int opb = stk.top();
+         stk.pop();
+         int opa = stk.top();
+         stk.pop();
+         switch (c[0])
+         {
+            case '+':
+               stk.push(opa + opb);
+               break;
+            case '-':
+               stk.push(opa - opb);
+               break;
+            case 'x':
+               stk.push(opa * opb);
+               break;
+            case '/':
+               stk.push(opa / opb);
+         }
+      }
+   }
+   return stk.top();
+}
+
+///////////////////////////////////////////////////////////////////////////////
 // Main program
 ///////////////////////////////////////////////////////////////////////////////
 int main()
@@ -130,7 +173,7 @@ int main()
     std::cout << "Play with Stack!!!\n" << std::endl;
 
     ///////////////////////////////////////////////////////////////////////////
-    std::cout << "Balance parenthesis" << std::endl;
+    std::cout << "\nBalance parenthesis" << std::endl;
     // Create test data
     std::string expn = "{[(a + 5)*(b + 6)] * [(c - 10) * (d + 8)]}";
     std::cout << "Expression is: " << expn << std::endl;
@@ -144,9 +187,14 @@ int main()
     }
 
     ///////////////////////////////////////////////////////////////////////////
-    std::cout << "Baseball game" << std::endl;
+    std::cout << "\nBaseball game" << std::endl;
     std::vector<std::string> ops = {"5", "2", "C", "D", "+"};
     std::cout << "Result = " << calPoints(ops) << std::endl;
 
+    ///////////////////////////////////////////////////////////////////////////
+    std::cout << "\nRPN evaluation" << std::endl;
+    std::vector<std::string> rpn= {"4", "13", "5", "/", "+"};
+    std::cout << "Result = " << evaluateRPN(rpn) << std::endl;
+    
     return 0;
 }
