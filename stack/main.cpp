@@ -4,6 +4,7 @@
 #include <string>
 #include <ctype.h>
 #include <sstream>
+#include <stdexcept>
 
 ///////////////////////////////////////////////////////////////////////////////
 // Balance parenthesis
@@ -166,6 +167,57 @@ int evaluateRPN(std::vector<std::string> const &expression)
 }
 
 ///////////////////////////////////////////////////////////////////////////////
+//
+///////////////////////////////////////////////////////////////////////////////
+std::string simplifyPath(std::string path)
+{
+   std::stack<std::string> tokens;
+   std::stringstream ss(path);
+   std::string token;
+   std::string result;
+   if (path.front() == '/')
+   {
+      tokens.push("/");
+   }
+   while (std::getline(ss, token, '/'))
+   {
+      if (token == "..")
+      {
+         if (tokens.empty() || tokens.top() == "..")
+         {
+            tokens.push(token);
+         }
+         else if (tokens.top() == "/")
+         {
+            throw std::runtime_error("Invalid path");
+         }
+         else
+         {
+            tokens.pop();
+         }
+      }
+      else if (token != "." && token != "")
+      {
+         tokens.push(token);
+      }   
+   }
+   while (!tokens.empty())
+   {
+      token = tokens.top();
+      if (token != "/")
+      {
+         result.insert(0, "/" + token);
+      }
+      else
+      {
+         result.insert(0, token);
+      }
+      tokens.pop();
+   }
+   return result;
+}
+
+///////////////////////////////////////////////////////////////////////////////
 // Main program
 ///////////////////////////////////////////////////////////////////////////////
 int main()
@@ -195,6 +247,12 @@ int main()
     std::cout << "\nRPN evaluation" << std::endl;
     std::vector<std::string> rpn= {"4", "13", "5", "/", "+"};
     std::cout << "Result = " << evaluateRPN(rpn) << std::endl;
+    
+    ///////////////////////////////////////////////////////////////////////////
+    std::cout << "\nSimplify path" << std::endl;
+    std::string path = "usr//././../home/namly/../Documents/./study/";
+    std::cout << "Before, path = " << path << std::endl;
+    std::cout << "Result = " << simplifyPath(path) << std::endl;
     
     return 0;
 }
