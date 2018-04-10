@@ -5,6 +5,7 @@
 #include <ctype.h>
 #include <sstream>
 #include <stdexcept>
+#include <unordered_map>
 
 ///////////////////////////////////////////////////////////////////////////////
 // Balance parenthesis
@@ -167,6 +168,7 @@ int evaluateRPN(std::vector<std::string> const &expression)
 }
 
 ///////////////////////////////////////////////////////////////////////////////
+// Simplify path
 //
 ///////////////////////////////////////////////////////////////////////////////
 std::string simplifyPath(std::string path)
@@ -218,6 +220,82 @@ std::string simplifyPath(std::string path)
 }
 
 ///////////////////////////////////////////////////////////////////////////////
+// Longest valid parens
+//
+//  @param[in] expression vector represents parens
+//
+//  @return length of the longest sequence of parens
+///////////////////////////////////////////////////////////////////////////////
+unsigned int longestParen(std::vector<std::string> const &parens)
+{
+   (void)parens;
+   return 0;
+}
+
+
+///////////////////////////////////////////////////////////////////////////////
+// Next greater element
+//
+//  @param[in] findNums numbers to find for next greater element
+//  @param[in] nums numbers that being searched
+//
+//  @return next greater numbers of findNums in nums
+///////////////////////////////////////////////////////////////////////////////
+std::vector<int> nextGreaterElements(std::vector<int> findNums,
+   std::vector<int> nums)
+{
+   std::stack<int> temp;
+   std::vector<int> results;
+   std::unordered_map<int, int> map;
+   int ele = 0;
+   for (auto const it: nums)
+   {
+      if (!temp.empty())
+      {
+         while (temp.top() < it)
+         {
+            ele = temp.top();
+            map.emplace(ele, it);
+            temp.pop();
+            if (temp.empty())
+            {
+               break;
+            }
+         }
+         temp.push(it);
+      }
+      else
+      {
+         temp.push(it);
+      }
+   }
+
+   while (!temp.empty())
+   {
+      map.emplace(temp.top(), -1);
+      temp.pop();
+   }
+
+   for (auto const it: findNums)
+   {
+      results.emplace_back(map[it]);
+   }
+   return results;
+}
+
+///////////////////////////////////////////////////////////////////////////////
+// Main program
+///////////////////////////////////////////////////////////////////////////////
+void printVector(std::vector<int> const &v)
+{
+   for (auto const it: v)
+   {
+      std::cout << it << " ";
+   }
+   std::cout << std::endl;
+}
+
+///////////////////////////////////////////////////////////////////////////////
 // Main program
 ///////////////////////////////////////////////////////////////////////////////
 int main()
@@ -254,5 +332,11 @@ int main()
     std::cout << "Before, path = " << path << std::endl;
     std::cout << "Result = " << simplifyPath(path) << std::endl;
     
+    ///////////////////////////////////////////////////////////////////////////
+    std::cout << "\nNext greater element" << std::endl;
+    std::vector<int> findNums = {4, 1, 2};
+    std::vector<int> nums = {1, 3, 4, 2};
+    std::cout << "Result = ";
+    printVector(nextGreaterElements(findNums, nums));
     return 0;
 }
