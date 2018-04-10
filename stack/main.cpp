@@ -315,12 +315,11 @@ std::vector<int> nextGreaterElementsRounded(std::vector<int> const &nums)
          while (temp.top() < it)
          {
             ele = temp.top();
-            //auto iter = map.find(ele);
-            //if (iter == map.end())
-            //{
-            //   map.emplace(ele, it);
-            //}
-            map.emplace(ele, it);
+            auto iter = map.find(ele);
+            if (iter == map.end())
+            {
+               map.emplace(ele, it);
+            }
             temp.pop();
             if (temp.empty())
             {
