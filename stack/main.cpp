@@ -232,7 +232,6 @@ unsigned int longestParen(std::vector<std::string> const &parens)
    return 0;
 }
 
-
 ///////////////////////////////////////////////////////////////////////////////
 // Next greater element
 //
@@ -277,6 +276,72 @@ std::vector<int> nextGreaterElements(std::vector<int> findNums,
    }
 
    for (auto const it: findNums)
+   {
+      results.emplace_back(map[it]);
+   }
+   return results;
+}
+
+///////////////////////////////////////////////////////////////////////////////
+// Next greater element for rounded array
+//
+//  @param[in] nums numbers that being searched
+//
+//  @return next greater numbers of each number in nums, if not found, search
+//   from the beginning.
+//
+//  @remarks [3, 5, 7, 4] ---> [5, 7, -1, 5] 
+///////////////////////////////////////////////////////////////////////////////
+std::vector<int> nextGreaterElementsRounded(std::vector<int> const &nums)
+{
+   std::stack<int> temp;
+   std::vector<int> results;
+   std::unordered_map<int, int> map;
+   int ele = 0;
+   int length = nums.size();
+   
+   // Duplicate numbers
+   std::vector<int> double_nums = nums;
+   double_nums.resize(2 * length);
+   for (int i = 0; i < length; i++)
+   {
+      double_nums[length + i] = double_nums[i];
+   }
+
+   for (auto const it: double_nums)
+   {
+      if (!temp.empty())
+      {
+         while (temp.top() < it)
+         {
+            ele = temp.top();
+            //auto iter = map.find(ele);
+            //if (iter == map.end())
+            //{
+            //   map.emplace(ele, it);
+            //}
+            map.emplace(ele, it);
+            temp.pop();
+            if (temp.empty())
+            {
+               break;
+            }
+         }
+         temp.push(it);
+      }
+      else
+      {
+         temp.push(it);
+      }
+   }
+
+   while (!temp.empty())
+   {
+      map.emplace(temp.top(), -1);
+      temp.pop();
+   }
+
+   for (auto const it: nums)
    {
       results.emplace_back(map[it]);
    }
@@ -338,5 +403,14 @@ int main()
     std::vector<int> nums = {1, 3, 4, 2};
     std::cout << "Result = ";
     printVector(nextGreaterElements(findNums, nums));
+
+    ///////////////////////////////////////////////////////////////////////////
+    std::cout << "\nRounded next greater element" << std::endl;
+    std::vector<int> nums2 = {100, 1, 11, 1, 120, 11, 123, 1, -1, -100};
+    std::cout << "Original numbers = ";
+    printVector(nums2);
+    std::cout << "Result = ";
+    printVector(nextGreaterElementsRounded(nums2));
+
     return 0;
 }
