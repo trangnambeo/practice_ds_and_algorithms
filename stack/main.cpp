@@ -294,7 +294,7 @@ std::vector<int> nextGreaterElements(std::vector<int> findNums,
 ///////////////////////////////////////////////////////////////////////////////
 std::vector<int> nextGreaterElementsRounded(std::vector<int> const &nums)
 {
-   std::stack<int> temp;
+   std::stack<int> stk;
    std::vector<int> results;
    std::unordered_map<int, int> map;
    int ele = 0;
@@ -308,41 +308,37 @@ std::vector<int> nextGreaterElementsRounded(std::vector<int> const &nums)
       double_nums[length + i] = double_nums[i];
    }
 
-   for (auto const it: double_nums)
+   for (int i = 0; i < 2 * length; i++)
    {
-      if (!temp.empty())
+      if (!stk.empty())
       {
-         while (temp.top() < it)
+         while (double_nums[stk.top()] < double_nums[i])
          {
-            ele = temp.top();
-            auto iter = map.find(ele);
-            if (iter == map.end())
-            {
-               map.emplace(ele, it);
-            }
-            temp.pop();
-            if (temp.empty())
+            ele = stk.top();
+            map.emplace(ele, double_nums[i]);
+            stk.pop();
+            if (stk.empty())
             {
                break;
             }
          }
-         temp.push(it);
+         stk.push(i);
       }
       else
       {
-         temp.push(it);
+         stk.push(i);
       }
    }
 
-   while (!temp.empty())
+   while (!stk.empty())
    {
-      map.emplace(temp.top(), -1);
-      temp.pop();
+      map.emplace(stk.top(), -1);
+      stk.pop();
    }
 
-   for (auto const it: nums)
+   for (int i = 0; i < length; i++)
    {
-      results.emplace_back(map[it]);
+      results.emplace_back(map[i]);
    }
    return results;
 }
